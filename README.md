@@ -20,6 +20,7 @@ This project outlines how to create a custom runtime for the ATmega328P, incorpo
    - On **macOS** (using Homebrew): `brew install avr-gcc avrdude avrdude --with-usb`
 
 ``
+![Logo](./memlayout.png "Memory Layout")
 
 - `crt1.S`: Custom runtime startup code.
 - `math_util.c`: Mathematical utility functions source file.
