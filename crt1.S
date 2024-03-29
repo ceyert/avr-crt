@@ -82,33 +82,25 @@ rjmp __do_copy_data       ; Jump to data copy routine
 ; ********** Copy data & clear bss **********
 
 ; Copy Data section into SRAM
-.section .init4,"ax",@progbits
+.section .init4, "ax", @progbits
 __do_copy_data:
-
-    ldi r26, lo8(__data_start)
+    ldi r26, lo8(__data_start)        ; Initialize X pointer to start of .data in SRAM
     ldi r27, hi8(__data_start)
-    ldi r30, lo8(__data_load_start)
+    ldi r30, lo8(__data_load_start)   ; Initialize Z pointer to start of .data in flash
     ldi r31, hi8(__data_load_start)
-    ldi r18, lo8(__data_end)
+    ldi r18, lo8(__data_end)          ; Load address bounds of .data section
     ldi r19, hi8(__data_end)
 copy_loop:
-    lpm r0, Z+
-    st X+, r0
-    cp r26, r18
-    cpc r27, r19
-    brne copy_loop
+    lpm r0, Z+                        ; Load a byte from flash to r0 and increment Z
+    st X+, r0                         ; Store the byte from r0 into SRAM and increment X
+    cpi r26, lo8(__data_end)          ; Compare low byte of X pointer against low byte of data_end
+    cpc r27, r19                      ; Compare with carry, high byte of X pointer against high byte of data_end
+    brcc copy_done                    ; If carry cleared, reached or passed __data_end
+    rjmp copy_loop                    ; Continue loop if not done
+copy_done:
 
-; Clear BSS section
-    ldi r26, lo8(__bss_start)
-    ldi r27, hi8(__bss_start)
-    ldi r18, lo8(__bss_end)
-    ldi r19, hi8(__bss_end)
-clear_loop:
-    st X+, __zero_reg__ ; Store 0 into RAM and increment X
-    sbiw r30, 1 ; Decrement length
-    brne clear_loop ; Repeat until done
 
-rjmp __init9
+    rjmp __init9
 
 
 .section .init9,"ax",@progbits

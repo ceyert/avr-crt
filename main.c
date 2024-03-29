@@ -1,7 +1,6 @@
 #include "math_util.h"
+#include "uart.h"
 
-#define F_CPU 16000000UL
-#define BAUD 9600
 #define UBRR_VALUE (((F_CPU / (BAUD * 16UL))) - 1)
 #define CYCLES_PER_MS (F_CPU / 1000UL)
 #define DELAY_LOOP_CYCLES 4
@@ -15,21 +14,6 @@ static void delay_my_ms(unsigned short ms)
         __asm__ volatile("nop");
     }
 }
-
-typedef unsigned char uint8_t;
-
-#define UBRR0H *(volatile uint8_t*)(0xC5)
-#define UBRR0L *(volatile uint8_t*)(0xC4)
-#define UCSR0B *(volatile uint8_t*)(0xC1)
-#define UCSR0C *(volatile uint8_t*)(0xC2)
-#define UDR0 *(volatile uint8_t*)(0xC6)
-#define UCSR0A *(volatile uint8_t*)(0xC0)
-
-#define RXEN0 4
-#define TXEN0 3
-#define UCSZ00 1
-#define UCSZ01 2
-#define UDRE0 5
 
 void USART_Init(void)
 {
@@ -55,7 +39,7 @@ void USART_Transmit(uint8_t data)
     UDR0 = data;
 }
 
-void USART_SendString(const char* str)
+void USART_SendString(const uint8_t* str)
 {
     while (*str != '\0')
     {
@@ -64,55 +48,50 @@ void USART_SendString(const char* str)
     }
 }
 
-#define MAX_SIZE 50
-
-void USART_SendInt(int value)
+void USART_SendCharArr(const uint8_t* buffer, uint8_t size)
 {
-    char buffer[MAX_SIZE + 1];          // +1 for null terminator
-    char* str = &buffer[0] + MAX_SIZE;  // Start at the end of the buffer
-    *str = '\0';
-
-    int isNegative = value < 0;
-
-    if (value == 0)
+    uint8_t idx = 0;
+    while (idx < size)
     {
-        *--str = '0';
+        USART_Transmit(buffer[idx]);
+        idx++;
     }
-    else
-    {
-        // Process each digit; this works even if value is negative
-        while (value != 0)
-        {
-            int digit = value % 10;
-            if (digit < 0)
-            {
-                digit = -digit;  // Make digit positive
-            } 
-            *--str = '0' + digit;
-            value /= 10;
-        }
-        if (isNegative)
-        {
-            *--str = '-'; 
-        }
-    }
-
-    USART_SendString(str);
 }
 
-int global_counter = 50;
+
+void USART_SendInt(int value, uint8_t size)
+{
+    uint8_t buffer[size + 1];       
+    uint8_t* str = buffer + (sizeof(uint8_t) + (size + 1));  
+    *str-- = '\0';
+    
+    uint8_t digit_idx = size + 1;
+
+    while (digit_idx > 0)
+    {
+        uint8_t digit = value % 10;
+        *str-- = '0' + digit;
+        value /= 10;
+        USART_SendString(str);
+        --digit_idx;
+    }
+}
+
+uint8_t buffer[10] = {'H', 'E', 'L', 'L', 'O', ' ', 'A', 'V', 'R', '!'};
+
+int global_value = 12345;
 
 int main(void)
 {
     USART_Init();
 
+    USART_SendInt(global_value, 5);
+
     while (1)
     {
-        USART_SendString("Counter value: ");
-        USART_SendInt(global_counter);
-        USART_SendString("\r\n");
-
-        global_counter++;
+        USART_SendCharArr(buffer, 10);
         delay_my_ms(1000);
     }
+
+    return 0;
 }

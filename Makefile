@@ -1,12 +1,12 @@
 MCU=atmega328p
 F_CPU=16000000UL
 BAUD=115200
-PORT=/dev/ttyACM4
+PORT=/dev/ttyACM0
 SRC=main.c crt1.S math_util.c  
 OBJCOPY=avr-objcopy
 CC=avr-gcc
 DUDE=avrdude
-CFLAGS=-mmcu=$(MCU) -nodevicelib -nodefaultlibs -nostdlib -O3
+CFLAGS=-mmcu=$(MCU) -nodevicelib -nodefaultlibs -nostdlib -O3 -g0
 TARGET=main
 
 all: $(TARGET).hex
