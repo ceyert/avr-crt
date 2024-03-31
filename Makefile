@@ -21,9 +21,13 @@ upload: $(TARGET).hex
 	$(DUDE) -V -p$(MCU) -carduino -P$(PORT) -b$(BAUD_UPLOAD) -D -Uflash:w:$<:i
 
 monitor:
-	screen $(PORT) b$(BAUD)
+	screen $(PORT) $(BAUD)
+
+simulate: $(TARGET).elf
+	@echo "Run './debug.sh on separate window!"
+	simavr -g -m $(MCU) $<
 
 clean:
 	rm -f $(TARGET).elf $(TARGET).hex $(TARGET).map
 
-.PHONY: all upload monitor clean
+.PHONY: all upload monitor clean simulate debug
