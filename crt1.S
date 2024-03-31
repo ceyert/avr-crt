@@ -61,10 +61,19 @@ __init:
 .weak __heap_end
 .set __heap_end, 0
 
+; First 256 bytes of SRAM reserved for the 32 general-purpose registers, I/O registers and extended I/O register.
+.weak __sram_base
+.set __sram_base, 0x800100
+
+.weak sram_end
+.set sram_end, 0x8008ff
+
+; 2KB SRAM (0x8008ff - 0x800100)
+
 
 ; ********** Initialize Stack Pointer **********
 .weak __stack
-.set __stack, 0x08FF  ; Define stack end, RAMEND
+.set __stack, sram_end  ; Define stack end, RAMEND
 
 ldi r16, lo8(__stack)    ; Load low byte of stack end (0x08FF) into r16
 out 0x3D, r16             ; SPL address
