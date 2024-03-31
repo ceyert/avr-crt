@@ -22,9 +22,6 @@ This project outlines how to create a custom runtime for the ATmega328P, incorpo
 ``
 ![Logo](./memlayout.png "Memory Layout")
 
-- `crt1.S`: Custom runtime startup code.
-- `math_util.c`: Mathematical utility functions source file.
-- `math_util.h`: Header file for the mathematical utility functions.
 
 ## Building the Project
 
