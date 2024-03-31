@@ -7,7 +7,7 @@
 #define BAUD 9600
 #define UBRR_VALUE (((F_CPU / (BAUD * 16UL))) - 1)
 
-
+// UART Registers
 #define UBRR0H *(volatile uint8_t*)(0xC5)
 #define UBRR0L *(volatile uint8_t*)(0xC4)
 #define UCSR0B *(volatile uint8_t*)(0xC1)

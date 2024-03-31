@@ -1,8 +1,8 @@
 MCU=atmega328p
-F_CPU=16000000UL
-BAUD=115200
+BAUD=9600
+BAUD_UPLOAD=115200
 PORT=/dev/ttyACM0
-SRC=main.c crt1.S math_util.c  
+SRC=crt1.S main.c math_util.c uart.c
 OBJCOPY=avr-objcopy
 CC=avr-gcc
 DUDE=avrdude
@@ -18,10 +18,10 @@ $(TARGET).hex: $(TARGET).elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 
 upload: $(TARGET).hex
-	$(DUDE) -V -p$(MCU) -carduino -P$(PORT) -b$(BAUD) -D -Uflash:w:$<:i
+	$(DUDE) -V -p$(MCU) -carduino -P$(PORT) -b$(BAUD_UPLOAD) -D -Uflash:w:$<:i
 
 monitor:
-	screen $(PORT) 9600
+	screen $(PORT) b$(BAUD)
 
 clean:
 	rm -f $(TARGET).elf $(TARGET).hex $(TARGET).map
