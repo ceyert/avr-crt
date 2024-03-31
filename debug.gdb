@@ -9,4 +9,3 @@ info address buffer
 info address global_value
 info variables
 info registers sp
-
