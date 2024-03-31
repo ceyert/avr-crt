@@ -25,6 +25,10 @@ static void delay_ms(unsigned short ms)
     }
 }
 
+extern char __data_end;
+char* heap_bitmap_base_addr = &__data_end;
+
+
 uint8_t buffer[10] = {'H', 'E', 'L', 'L', 'O', ' ', 'A', 'V', 'R', '!'};
 
 int global_value = 12345;

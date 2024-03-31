@@ -24,6 +24,9 @@ monitor:
 	screen $(PORT) $(BAUD)
 
 simulate: $(TARGET).elf
+	simavr -m $(MCU) $<
+
+debug: $(TARGET).elf
 	@echo "Run './debug.sh on separate window!"
 	simavr -g -m $(MCU) $<
 

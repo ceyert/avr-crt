@@ -58,22 +58,19 @@ __bad_interrupt:
 .func __init
 __init:
 
-.weak __heap_end
-.set __heap_end, 0
-
 ; First 256 bytes of SRAM reserved for the 32 general-purpose registers, I/O registers and extended I/O register.
 .weak __sram_base
 .set __sram_base, 0x800100
 
-.weak sram_end
-.set sram_end, 0x8008ff
+.weak __sram_end
+.set __sram_end, 0x8008ff
 
 ; 2KB SRAM (0x8008ff - 0x800100)
 
 
 ; ********** Initialize Stack Pointer **********
 .weak __stack
-.set __stack, sram_end  ; Define stack end, RAMEND
+.set __stack, __sram_end  ; Define stack end, RAMEND
 
 ldi r16, lo8(__stack)    ; Load low byte of stack end (0x08FF) into r16
 out 0x3D, r16             ; SPL address
@@ -106,11 +103,10 @@ copy_loop:
     cpc r27, r19                      ; Compare with carry, high byte of X pointer against high byte of data_end
     brcc copy_done                    ; If carry cleared, reached or passed __data_end
     rjmp copy_loop                    ; Continue loop if not done
+
 copy_done:
-
-
     rjmp __init9
-
+    
 
 .section .init9,"ax",@progbits
 __init9:
