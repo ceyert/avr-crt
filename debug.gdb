@@ -12,3 +12,4 @@ info address __sram_end
 info address __stack
 info variables
 info registers sp
+x/2048xb 0x800000

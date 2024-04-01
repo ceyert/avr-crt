@@ -95,8 +95,6 @@ __do_copy_data:
 
     ldi r30, lo8(__data_load_start)   ; Initialize Z pointer to start of .data in flash
     ldi r31, hi8(__data_load_start)
-    ldi	r16, hh8(__data_load_start - 0x10000)
-    inc	r16
 
     ldi r18, lo8(__data_end)          ; Load address bounds of .data section
     ldi r19, hi8(__data_end)

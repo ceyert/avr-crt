@@ -33,6 +33,10 @@ uint8_t buffer[10] = {'H', 'E', 'L', 'L', 'O', ' ', 'A', 'V', 'R', '!'};
 
 int global_value = 12345;
 
+int global_value_gdb_testing = 7;
+
+char global_value_gdb_testing2 = 'A';
+
 int main(void)
 {
     USART_Init();
