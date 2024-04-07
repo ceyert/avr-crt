@@ -1,13 +1,13 @@
 #include "cpu_freq.h"
-#include "math_util.h"
+#include "gcc_builtins.h"
 #include "uart.h"
 
 /*
 extern void preMainInit(void) __attribute__((section(".ctors")));
 
-void preMainInit(void) 
+void preMainInit(void)
 {
-    
+
 }
 */
 
@@ -25,23 +25,20 @@ static void delay_ms(unsigned short ms)
     }
 }
 
-extern char __data_end;
-char* heap_bitmap_base_addr = &__data_end;
-
-
 uint8_t buffer[10] = {'H', 'E', 'L', 'L', 'O', ' ', 'A', 'V', 'R', '!'};
-
-int global_value = 12345;
-
-int global_value_gdb_testing = 7;
-
-char global_value_gdb_testing2 = 'A';
 
 int main(void)
 {
+    {
+        char* ptr = (char*)(0x800180);
+        *ptr = 7;
+    }
+
     USART_Init();
 
-    USART_SendInt(global_value, 5);
+    int value = 12345;
+
+    USART_SendInt(value, 5);
 
     while (1)
     {

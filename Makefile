@@ -2,11 +2,11 @@ MCU=atmega328p
 BAUD=9600
 BAUD_UPLOAD=115200
 PORT=/dev/ttyACM0
-SRC=crt1.S main.c math_util.c uart.c
+SRC=crt1.S main.c gcc_builtins.c uart.c malloc.c
 OBJCOPY=avr-objcopy
 CC=avr-gcc
 DUDE=avrdude
-CFLAGS=-mmcu=$(MCU) -nodevicelib -nodefaultlibs -nostdlib -O3 -g0
+CFLAGS=-mmcu=$(MCU) -nodevicelib -nodefaultlibs -nostdlib -O3 -g0 -fno-builtin-memset
 TARGET=main
 
 all: $(TARGET).hex

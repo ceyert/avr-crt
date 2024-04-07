@@ -1,4 +1,4 @@
-#include "math_util.h"
+#include "gcc_builtins.h"
 
 uint16_t __umulhisi3(uint16_t a, uint16_t b)
 {
@@ -27,4 +27,14 @@ divmodhi4_result __divmodhi4(int16_t a, int16_t b)
     result.quotient = quotientSign * (int16_t)quotient;
     result.remainder = (a < 0) ? (int16_t)-remainder : (int16_t)remainder;
     return result;
+}
+
+
+void memset(uint8_t* base_addr, uint8_t value, int size)
+{
+    while (size >= 0)
+    {
+        *base_addr++ = (uint8_t)value;
+        size--;
+    }
 }
