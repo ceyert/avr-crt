@@ -11,6 +11,7 @@ static void apply_alignemt(uint16_t* size_in_bytes)
     if (*size_in_bytes < PER_CELL_SIZE)
     {
         *size_in_bytes = PER_CELL_SIZE;
+        return;
     }
 
     // apply alignment to PER_CELL_SIZE
