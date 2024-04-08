@@ -50,7 +50,7 @@ void malloc_init()
 {
     memset(bitmap_base_addr, BITMAP_CELL_FREE, BITMAP_SIZE);
 
-    heap_free_base_addr = bitmap_base_addr + (sizeof(uint8_t) * BITMAP_SIZE);
+    heap_free_base_addr = bitmap_base_addr + (PER_CELL_SIZE * BITMAP_SIZE);
 }
 
 void* malloc(uint16_t size_in_bytes)
