@@ -85,7 +85,7 @@ void* malloc(uint16_t size_in_bytes)
         idx++;
     }
 
-    if (found == 0)
+    if (!found)
     {
         return (void*)-1;
     }
