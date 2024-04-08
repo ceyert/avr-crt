@@ -28,20 +28,20 @@ static void* apply_occupy(uint8_t base_idx, uint8_t total_req_cells)
 
     if (total_req_cells == 1)
     {
-        heapmap_base_addr[base_idx] = BITMAP_CELL_INUSE;
+        heapmap_base_addr[base_idx] = CELL_INUSE;
 
         heap_free_base_addr += CELL_SIZE;
         return allocated_ptr;
     }
 
-    heapmap_base_addr[base_idx++] = BITMAP_CELL_INUSE;
+    heapmap_base_addr[base_idx++] = CELL_INUSE;
 
     while (base_idx < total_req_cells - 1)  // last cell will be used for inuse_last
     {
-        heapmap_base_addr[base_idx++] = BITMAP_CELL_INUSE_CONTUNIE;
+        heapmap_base_addr[base_idx++] = CELL_INUSE_CONTUNIE;
     }
 
-    heapmap_base_addr[base_idx] = BITMAP_CELL_INUSE_LAST;
+    heapmap_base_addr[base_idx] = CELL_INUSE_LAST;
 
     heap_free_base_addr += (total_req_cells * CELL_SIZE);
     return allocated_ptr;
@@ -49,7 +49,7 @@ static void* apply_occupy(uint8_t base_idx, uint8_t total_req_cells)
 
 void heap_init()
 {
-    memset(heapmap_base_addr, BITMAP_CELL_FREE, HEAP_CELLS);
+    memset(heapmap_base_addr, CELL_FREE, HEAP_CELLS);
 
     heap_free_base_addr = heapmap_base_addr + HEAP_CELLS;
 }
@@ -70,7 +70,7 @@ void* malloc(uint16_t size_in_bytes)
     {
         encounted_cells++;
 
-        if (heapmap_base_addr[idx] != BITMAP_CELL_FREE)
+        if (heapmap_base_addr[idx] != CELL_FREE)
         {
             encounted_cells = 0;
             base_idx = idx + 1;
