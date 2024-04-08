@@ -42,7 +42,7 @@ static void* apply_occupy(uint8_t base_idx, uint8_t total_req_cells)
 
     bitmap_base_addr[base_idx] = BITMAP_CELL_INUSE_LAST;
 
-    void* allocated_ptr = heap_free_base_addr + (total_req_cells * PER_CELL_SIZE);
+    void* allocated_ptr = heap_free_base_addr + total_req_cells;
     heap_free_base_addr += total_req_cells;
     return allocated_ptr;
 }
