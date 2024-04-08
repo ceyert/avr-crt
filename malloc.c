@@ -73,7 +73,7 @@ void* malloc(uint16_t size_in_bytes)
         if (bitmap_base_addr[idx] != BITMAP_CELL_FREE)
         {
             encounted_cells = 0;
-            base_idx = idx;
+            base_idx = idx + 1;
         }
 
         if (encounted_cells == total_req_cells)
