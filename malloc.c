@@ -51,7 +51,7 @@ void heap_init()
 {
     memset(heapmap_base_addr, BITMAP_CELL_FREE, HEAP_CELLS);
 
-    heap_free_base_addr = heapmap_base_addr + (CELL_SIZE * HEAP_CELLS);
+    heap_free_base_addr = heapmap_base_addr + HEAP_CELLS;
 }
 
 void* malloc(uint16_t size_in_bytes)
