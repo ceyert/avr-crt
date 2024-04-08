@@ -6,7 +6,7 @@
 
 #define BITMAP_SIZE 140                                 // total bitmap size
 #define PER_CELL_SIZE 8                                 // 8 bytes each CELL
-#define TOTAL_HEAP_SIZE (BITMAP_SIZE * PER_CELL_SIZE)   // 1040 bytes heap in total
+#define TOTAL_HEAP_SIZE (BITMAP_SIZE * PER_CELL_SIZE)   // 1120 bytes heap in total
 
 #define BITMAP_CELL_FREE            0b00000000
 #define BITMAP_CELL_INUSE           0b00000001
