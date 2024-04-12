@@ -16,6 +16,6 @@ extern void heap_init();
 
 extern void* malloc(uint16_t size);
 
-extern void free(uint8_t* base_addr);
+extern char free(uint8_t* base_addr);
 
 #endif  // MALLOC_H

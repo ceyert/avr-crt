@@ -6,7 +6,7 @@ SRC=crt1.S main.c gcc_builtins.c uart.c malloc.c
 OBJCOPY=avr-objcopy
 CC=avr-gcc
 DUDE=avrdude
-CFLAGS=-mmcu=$(MCU) -nodevicelib -nodefaultlibs -nostdlib -O3 -g0 -fno-builtin-memset
+CFLAGS=-mmcu=$(MCU) -nodevicelib -nodefaultlibs -nostdlib -O3 -g0 -fno-builtin-memset -fno-builtin-free
 TARGET=main
 
 all: $(TARGET).hex

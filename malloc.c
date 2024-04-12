@@ -4,9 +4,10 @@
 extern uint8_t __data_end;
 static uint8_t* heapmap_base_addr = &__data_end;
 
-static uint8_t* heap_free_base_addr;
+static uint8_t* heap_base_addr = 0;
+static uint8_t* heap_free_base_addr = 0;
 
-static void apply_alignemt(uint16_t* size_in_bytes)
+static void apply_alignment(uint16_t* size_in_bytes)
 {
     if (*size_in_bytes < CELL_SIZE)
     {
@@ -30,7 +31,9 @@ static void* apply_occupy(uint8_t base_idx, uint8_t total_req_cells)
     {
         heapmap_base_addr[base_idx] = CELL_INUSE;
 
+        // expand heap free base address
         heap_free_base_addr += CELL_SIZE;
+
         return allocated_ptr;
     }
 
@@ -43,7 +46,9 @@ static void* apply_occupy(uint8_t base_idx, uint8_t total_req_cells)
 
     heapmap_base_addr[base_idx] = CELL_INUSE_LAST;
 
+    // expand heap free base address
     heap_free_base_addr += (total_req_cells * CELL_SIZE);
+
     return allocated_ptr;
 }
 
@@ -51,12 +56,13 @@ void heap_init()
 {
     memset(heapmap_base_addr, CELL_FREE, HEAP_CELLS);
 
-    heap_free_base_addr = heapmap_base_addr + HEAP_CELLS + sizeof(uint8_t);
+    heap_base_addr = heapmap_base_addr + HEAP_CELLS + sizeof(uint8_t); // point 1 byte below after heap map
+    heap_free_base_addr = heap_base_addr;
 }
 
 void* malloc(uint16_t size_in_bytes)
 {
-    apply_alignemt(&size_in_bytes);
+    apply_alignment(&size_in_bytes);
 
     uint8_t total_req_cells = size_in_bytes / CELL_SIZE;
 
@@ -87,13 +93,64 @@ void* malloc(uint16_t size_in_bytes)
 
     if (!found)
     {
-        return (void*)-1;
+        return 0x0;
     }
 
     return apply_occupy(base_idx, total_req_cells);
 }
 
-void free(uint8_t* base_addr)
+static uint8_t check_allocated_ptr_valid(uint8_t allocated_ptr_idx)
 {
-    // TODO
+    return heapmap_base_addr[allocated_ptr_idx] == CELL_INUSE ? 1 : 0;
+}
+
+static char apply_free(uint8_t allocated_ptr_idx)
+{
+    uint8_t total_allocated_cells = 0;
+
+    while (allocated_ptr_idx >= 0)
+    {
+        if (heapmap_base_addr[allocated_ptr_idx] == CELL_FREE)
+        {
+            break;
+        }
+
+        if (heapmap_base_addr[allocated_ptr_idx] == CELL_INUSE_LAST)
+        {
+            heapmap_base_addr[allocated_ptr_idx] = CELL_FREE; 
+            break;
+        }
+
+        if (total_allocated_cells > HEAP_CELLS) // samething goes wrong
+        {
+            return 0; 
+        }
+        
+        heapmap_base_addr[allocated_ptr_idx] = CELL_FREE;
+
+        allocated_ptr_idx--;
+        total_allocated_cells++;
+    }
+    
+    // shink heap free base address
+    heap_free_base_addr -= (total_allocated_cells * CELL_SIZE);
+
+    return 1;
+}
+
+char free(uint8_t* allocated_base_addr)
+{
+    if (allocated_base_addr < heap_base_addr || allocated_base_addr >= (heap_base_addr + HEAP_CELLS * CELL_SIZE))
+    {
+        return -1; // Invalid pointer
+    }
+
+    uint8_t allocated_ptr_idx = (allocated_base_addr - heap_base_addr) / CELL_SIZE;
+
+    if (check_allocated_ptr_valid(allocated_ptr_idx) == 0)
+    {
+        return -1;  // Invalid pointer
+    }
+
+    return apply_free(allocated_ptr_idx);    
 }
