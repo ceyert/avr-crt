@@ -68,7 +68,7 @@ __init:
 ; 2KB SRAM (0x8008ff - 0x800100)
 
 
-; ********** Initialize Stack Pointer **********
+; ********** Initialize Stack Pointer Address **********
 .weak __stack
 .set __stack, __sram_end  ; Define stack end, RAMEND
 
