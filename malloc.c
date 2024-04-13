@@ -29,7 +29,7 @@ static void* apply_occupy(uint8_t base_idx, uint8_t total_req_cells)
 
     if (total_req_cells == 1)
     {
-        heapmap_base_addr[base_idx] = CELL_INUSE;
+        heapmap_base_addr[base_idx] = CELL_INUSE | CELL_INUSE_LAST;
 
         // expand heap free base address
         heap_free_base_addr += CELL_SIZE;
@@ -101,28 +101,36 @@ void* malloc(uint16_t size_in_bytes)
 
 static uint8_t check_allocated_ptr_valid(uint8_t allocated_ptr_idx)
 {
-    return heapmap_base_addr[allocated_ptr_idx] == CELL_INUSE ? 1 : 0;
+    if (heapmap_base_addr[allocated_ptr_idx] == CELL_INUSE || heapmap_base_addr[allocated_ptr_idx] == (CELL_INUSE | CELL_INUSE_LAST))
+    {
+        return 1;
+    }
+
+    return 0;
 }
 
 static char apply_free(uint8_t allocated_ptr_idx)
 {
     uint8_t total_allocated_cells = 0;
 
-    while (allocated_ptr_idx >= 0)
+    while (heapmap_base_addr[allocated_ptr_idx] != CELL_FREE)
     {
-        if (heapmap_base_addr[allocated_ptr_idx] == CELL_FREE)
+        // only one cell was used
+        if (heapmap_base_addr[allocated_ptr_idx] == (CELL_INUSE | CELL_INUSE_LAST))
         {
+            heapmap_base_addr[allocated_ptr_idx] = CELL_FREE; 
             break;
         }
-
+     
         if (heapmap_base_addr[allocated_ptr_idx] == CELL_INUSE_LAST)
         {
             heapmap_base_addr[allocated_ptr_idx] = CELL_FREE; 
             break;
         }
 
-        if (total_allocated_cells > HEAP_CELLS) // samething goes wrong
+        if (total_allocated_cells > HEAP_CELLS) // SAFETY CHECK! Samething goes wrong!
         {
+            heap_init();
             return 0; 
         }
         
