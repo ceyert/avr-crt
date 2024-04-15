@@ -67,7 +67,7 @@ end_dtor_loop:
 .global __bad_interrupt
 .func __bad_interrupt
 __bad_interrupt:
-	rjmp .  
+	rjmp .          ; Busy loop here!
 .endfunc
 
 
