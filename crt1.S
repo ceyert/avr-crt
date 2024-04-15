@@ -1,5 +1,23 @@
-
 ; Linker symbols resolve during the linking stage not in here! 
+
+
+; **************************** Vector Table ****************************
+.section .vectors,"ax",@progbits
+.global __vectors
+.func   __vectors
+__vectors:
+    jmp __init                  ; Reset Handler
+    jmp __bad_interrupt         ; External Interrupt Request 0 Handler
+    jmp __bad_interrupt         ; External Interrupt Request 1 Handler
+    jmp __bad_interrupt         ; Pin Change Interrupt Request 0 Handler
+    jmp __bad_interrupt         ; Pin Change Interrupt Request 1 Handler
+    jmp __bad_interrupt         ; Pin Change Interrupt Request 2 Handler
+    jmp __bad_interrupt         ; Watchdog Time-out Interrupt Handler
+    jmp __bad_interrupt         ; Timer/Counter2 Compare Match A Handler
+    jmp __bad_interrupt         ; Timer/Counter2 Compare Match B Handler
+    jmp __bad_interrupt         ; Timer/Counter2 Overflow Handler
+    jmp __bad_interrupt         ; Timer/Counter1 Capture Event Handler
+.endfunc
 
 
 ; __do_global_ctors and __do_global_dtors necessary if there are any constructors/destructors. 
@@ -119,13 +137,4 @@ __init9:
 exit:
     rjmp exit
 
-.endfunc
-
-
-.section .vectors,"ax",@progbits
-.global __vectors
-.func   __vectors
-__vectors:
-    jmp __init
-    jmp __bad_interrupt
 .endfunc
