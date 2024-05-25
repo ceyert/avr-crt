@@ -88,12 +88,12 @@ __init:
 
 ; ********** Initialize Stack Pointer Address **********
 .weak __stack
-.set __stack, __sram_end  ; Define stack end, RAMEND
+.set __stack, __sram_end  ; Define stack to RAMEND
 
 ldi r16, lo8(__stack)    ; Load low byte of stack end (0x08FF) into r16
-out 0x3D, r16             ; SPL address
+out 0x3D, r16             ; SPL address 0x3D
 ldi r16, hi8(__stack)    ; Load high byte of stack end (0x08FF) into r16
-out 0x3E, r16             ; SPH address
+out 0x3E, r16             ; SPH address 0x3E
 
 clr __zero_reg__
 out 0x3F, __zero_reg__
