@@ -105,7 +105,7 @@ rjmp __do_copy_data       ; Jump to data copy routine
 
 ; ********** Copy data & clear bss **********
 
-; Copy Data section into SRAM
+; Copy .data section into SRAM base address as __data_start 
 .section .init4, "ax", @progbits
 __do_copy_data:
     ldi r26, lo8(__data_start)        ; Initialize X pointer to start of .data in SRAM
